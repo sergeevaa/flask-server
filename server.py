@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     user_agent = request.headers.get('User-Agent')
-    return (f'<h1>Hello!</h1> \r\n'
+    return (f'<h1>Hello, bro!</h1> \r\n'
             f'<h2>Lol your  11 bro is %s</h2>' % user_agent)
 
 
