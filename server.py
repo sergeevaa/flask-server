@@ -1,10 +1,15 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app, resources={r'/api/*':{'origins':'*'}})
 
 @app.route('/')
 def home():
-    return f'<h1>Hello, sis!</h1>'
+    user_agent = request.headers.get('User-Agent')
+    return (f'<h1>Hello! \r\n'
+            f'<h2>Lol your  11 bro is %s</h2>' % user_agent)
+
 
 @app.route('/user/<name>')
 def user(name):
@@ -34,5 +39,6 @@ def check_pest(number):
         return jsonify({'is_pest': result}), 200
 
 
+
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(debug=True)
