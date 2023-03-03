@@ -7,7 +7,6 @@ import sshtunnel
 sshtunnel.SSH_TIMEOUT = 25.0
 sshtunnel.TUNNEL_TIMEOUT = 25.0
 
-
 app = Flask(__name__)  # g36eLvNOgV
 cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
@@ -74,6 +73,7 @@ def get_article_name(id):
         response = {'error': 'ID not found'}
         return jsonify(response), 404
 
+
 @app.route('/api/article/count', methods=['GET'])
 def get_articles_count():
     c.execute("SELECT COUNT(*) FROM articles;")
@@ -86,17 +86,17 @@ def get_articles_count():
         response = {'message': 'No rows found'}
         return jsonify(response), 404
 
+
 @app.route('/api/article/all/id', methods=['GET'])
 def get_all_articles_id():
     c.execute("SELECT id FROM articles;")
-    articles_id = c.fetchone()[0]
+    articles_id = c.fetchone()
 
-    if articles_id:
-        response = {'id': articles_id}
-        return jsonify(response), 200
+    if len(articles_id) == 0:
+        return jsonify({'error': 'No IDs found.'}), 404
     else:
-        response = {'message': 'No rows found'}
-        return jsonify(response), 404
+        id_list = [item['id'] for item in articles_id]
+        return jsonify({'ids': id_list})
 
 
 if __name__ == '__main__':
