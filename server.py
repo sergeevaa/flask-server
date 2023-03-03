@@ -1,8 +1,29 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+# import json
+import pymysql
+import sshtunnel
 
-app = Flask(__name__)
-cors = CORS(app, resources={r'/api/*':{'origins':'*'}})
+sshtunnel.SSH_TIMEOUT = 25.0
+sshtunnel.TUNNEL_TIMEOUT = 25.0
+
+
+app = Flask(__name__)  # g36eLvNOgV
+cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
+
+db_blog = pymysql.connect(host='olebbj.mysql.pythonanywhere-services.com', user='olebbj', passwd='1111qwe!QWE',
+                          db='olebbj$blog', connect_timeout=180, port=3306)
+c = db_blog.cursor()
+print(c.execute("SHOW TABLES;"))
+tables = c.fetchall()
+for table in tables:
+    print(table)
+
+c.execute("SELECT * FROM articles;")
+rows = c.fetchall()
+for row in rows:
+    print(row)
+
 
 @app.route('/')
 def home():
@@ -29,6 +50,7 @@ def is_pest(number):
     else:
         return 4
 
+
 # endpoint to handle GET requests
 @app.route('/api/pest/<int:number>', methods=['GET'])
 def check_pest(number):
@@ -38,6 +60,19 @@ def check_pest(number):
         result = is_pest(number)
         return jsonify({'is_pest': result}), 200
 
+
+@app.route('/api/article/<int:id>', methods=['GET'])
+def get_article_name(id):
+    c.execute("SELECT * FROM articles WHERE id = %s;", (id,))
+    articles = c.fetchone()
+
+    if articles:
+        title, description = articles[1], articles[2]
+        response = {'title': title, 'description': description}
+        return jsonify(response), 200
+    else:
+        response = {'error': 'ID not found'}
+        return jsonify(response), 404
 
 
 if __name__ == '__main__':
