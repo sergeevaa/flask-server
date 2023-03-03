@@ -86,6 +86,18 @@ def get_articles_count():
         response = {'message': 'No rows found'}
         return jsonify(response), 404
 
+@app.route('/api/article/all/id', methods=['GET'])
+def get_all_articles_id():
+    c.execute("SELECT id FROM articles;")
+    articles_id = c.fetchone()[0]
+
+    if articles_id:
+        response = {'id': articles_id}
+        return jsonify(response), 200
+    else:
+        response = {'message': 'No rows found'}
+        return jsonify(response), 404
+
 
 if __name__ == '__main__':
     app.run(debug=True)
