@@ -77,14 +77,13 @@ def get_article_name(id):
 @app.route('/api/article/count', methods=['GET'])
 def get_articles_count():
     c.execute("SELECT COUNT(*) FROM articles;")
-    articles = c.fetchone()
+    count = c.fetchone()
 
-    if articles > 0:
-        count = articles
-        response = {'count': articles}
+    if count > 0:
+        response = {'count': count}
         return jsonify(response), 200
     else:
-        response = {'error': 'we don\'t have any news'}
+        response = {'error': '0 news'}
         return jsonify(response), 404
 
 
