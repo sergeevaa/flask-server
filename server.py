@@ -67,8 +67,8 @@ def get_article_name(id):
     articles = c.fetchone()
 
     if articles:
-        title, description = articles[1], articles[2]
-        response = {'title': title, 'description': description}
+        id_articles, title, description = articles[0], articles[1], articles[2]
+        response = {'id': id_articles, 'title': title, 'description': description}
         return jsonify(response), 200
     else:
         response = {'error': 'ID not found'}
