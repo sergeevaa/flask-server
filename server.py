@@ -76,7 +76,7 @@ def get_article_name(id):
 
 @app.route('/api/article/count', methods=['GET'])
 def get_articles_count():
-    c.execute("SELECT COUNT(*) FROM articles")
+    c.execute("SELECT COUNT(*) FROM articles;")
     articles = c.fetchone()
 
     if articles > 0:
