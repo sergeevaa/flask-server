@@ -88,14 +88,14 @@ def get_articles_count():
 
 
 @app.route('/api/article/ids', methods=['GET'])
-def get_all_articles_ids():
+def get_article_ids():
     c.execute("SELECT id FROM articles;")
-    articles_id = c.fetchall()
+    article_ids = c.fetchone()
 
-    if len(articles_id) == 0:
+    if len(article_ids) == 0:
         return jsonify({'error': 'No IDs found.'}), 404
     else:
-        id_list = [item['id'] for item in articles_id]
+        id_list = [item['id'] for item in article_ids]
         return jsonify({'ids': id_list}), 200
 
 
