@@ -95,8 +95,7 @@ def get_article_ids():
     if len(article_ids) == 0:
         return jsonify({'error': 'No IDs found.'}), 404
     else:
-        id_list = [item['id'] for item in article_ids]
-        return jsonify({'ids': id_list}), 200
+        return jsonify({'ids': article_ids}), 200
 
 
 if __name__ == '__main__':
