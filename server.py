@@ -91,11 +91,16 @@ def get_articles_count():
 def get_article_ids():
     c.execute("SELECT id FROM articles;")
     article_ids = c.fetchone()
+    result = []
 
     if len(article_ids) == 0:
         return jsonify({'error': 'No IDs found.'}), 404
     else:
-        return jsonify({'ids': article_ids}), 200
+        c.execute("SELECT COUNT(*) FROM articles;")
+        count = c.fetchone()[0]
+        while len(article_ids) <= count:
+            result.append(article_ids)
+        return jsonify({'ids': result}), 200
 
 
 if __name__ == '__main__':
