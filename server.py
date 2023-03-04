@@ -98,7 +98,7 @@ def get_article_ids():
     else:
         c.execute("SELECT COUNT(*) FROM articles;")
         count = c.fetchone()[0]
-        while len(article_ids) <= count:
+        while len(article_ids) != count:
             result.append(article_ids)
         return jsonify({'ids': result}), 200
 
