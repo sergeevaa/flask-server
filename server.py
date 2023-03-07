@@ -95,5 +95,59 @@ def get_article_ids():
     return jsonify(article_ids[0]), 200
 
 
+@app.route('/api/article/getText', methods=['GET'])
+def show_title():
+    title = request.args.get('title', '')
+    k = int(request.args.get('k', '10'))
+    res = ''
+    symbols = ["'", ',', '!', '?', '-', ':', ';', '@', '(', '<', '.', '!', '?', '"']
+
+    def whoIsIt(title, k, symbols):
+        about = 0
+        if len(title) == 0:
+            about = 0  # title is empty, ExR: ...
+        elif len(title) <= k:
+            about = 1  # title length <= count, ExR: title
+        elif title[k - 1] == ' ':
+            about = 2  # 25 symbol is whitespace, ExR: delete whitespace and add ...
+        elif symbols.__contains__(title[k]):
+            about = 3  # 25+1 symbol is punctuation mark, ExR: delete symbol and add ...
+        elif title[k] == ' ':
+            about = 4  # 25+1 symbol is whitespace, ExR: delete ' ' and add ...
+        else:
+            about = 5  # other
+
+        return about
+
+    def delete_symb(res):
+        j = len(res)
+        while res[j - 1] in symbols:
+            j -= 1
+        return res[:j]
+
+    about = whoIsIt(title, k)
+    # print(about)
+
+    if about == 0:
+        return "..."
+    elif about == 1:
+        return title
+    elif about == 2 or about == 3:
+        return delete_symb(title[:k - 1]) + "..."
+    elif about == 4:
+        return delete_symb(title[:k]) + "..."
+    else:
+        i = k-1
+        while title[i] != " " and i > 0:
+            i -= 1
+            if i != 0 and title[i] not in symbols:
+                return title[:i] + '...'
+            else:
+                return title[:k] + '...'
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
