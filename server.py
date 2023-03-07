@@ -95,7 +95,7 @@ def get_article_ids():
     return jsonify(article_ids[0]), 200
 
 
-@app.route('/api/article/getText', methods=['GET'])
+@app.route('/api/article/getText', methods=['POST'])
 def show_title():
     if not request.json or 'text' not in request.json or 'k' not in request.json:
         return jsonify({'error': 'Bad request. Missing required field(s)'}), 400
