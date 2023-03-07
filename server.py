@@ -139,21 +139,21 @@ def show_title():
     # print(about)
 
     if about == 0:
-        return "..."
+        return jsonify({"text": "..."}), 200
     elif about == 1:
-        return text
+        return jsonify({"text": text}), 200
     elif about == 2 or about == 3:
-        return delete_symb(text[:k - 1]) + "..."
+        return jsonify({"text": delete_symb(text[:k - 1]) + "..."}), 200
     elif about == 4:
-        return delete_symb(text[:k]) + "..."
+        return jsonify({"text": delete_symb(text[:k]) + "..."}), 200
     else:
         i = k-1
         while text[i] != " " and i > 0:
             i -= 1
             if i != 0 and text[i] not in symbols:
-                return text[:i] + '...'
+                return jsonify({"text": text[:i] + '...'}), 200
             else:
-                return text[:k] + '...'
+                return jsonify({"text": text[:k] + '...'}), 200
 
 
 if __name__ == '__main__':
