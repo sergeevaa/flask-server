@@ -92,7 +92,7 @@ def get_article_ids():
     article_ids = []
     c.execute("SELECT id FROM articles;")
     article_ids.append(c.fetchall())
-    return jsonify(article_ids), 200
+    return jsonify(article_ids[0]), 200
 
 
 if __name__ == '__main__':
