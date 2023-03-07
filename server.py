@@ -97,27 +97,37 @@ def get_article_ids():
 
 @app.route('/api/article/getText', methods=['GET'])
 def show_title():
-    title = request.args.get('title', '')
-    k = int(request.args.get('k', '10'))
+    if not request.json or 'title' not in request.json or 'k' not in request.json:
+        return jsonify({'error': 'Bad request. Missing required field(s)'}), 400
+
+    title = request.json['text']
+    try:
+        k = int(request.json['k'])
+    except ValueError:
+        return jsonify({'error': 'Bad request. Invalid value for k'}), 400
+
+    if k <= 0:
+        return jsonify({'error': 'Bad request. Invalid value for k'}), 400
+
     res = ''
     symbols = ["'", ',', '!', '?', '-', ':', ';', '@', '(', '<', '.', '!', '?', '"']
 
     def whoIsIt(title, k, symbols):
-        about = 0
+        update_text = 0
         if len(title) == 0:
-            about = 0  # title is empty, ExR: ...
+            update_text = 0  # title is empty, ExR: ...
         elif len(title) <= k:
-            about = 1  # title length <= count, ExR: title
+            update_text = 1  # title length <= count, ExR: title
         elif title[k - 1] == ' ':
-            about = 2  # 25 symbol is whitespace, ExR: delete whitespace and add ...
+            update_text = 2  # 25 symbol is whitespace, ExR: delete whitespace and add ...
         elif symbols.__contains__(title[k]):
-            about = 3  # 25+1 symbol is punctuation mark, ExR: delete symbol and add ...
+            update_text = 3  # 25+1 symbol is punctuation mark, ExR: delete symbol and add ...
         elif title[k] == ' ':
-            about = 4  # 25+1 symbol is whitespace, ExR: delete ' ' and add ...
+            update_text = 4  # 25+1 symbol is whitespace, ExR: delete ' ' and add ...
         else:
-            about = 5  # other
+            update_text = 5  # other
 
-        return about
+        return update_text
 
     def delete_symb(res):
         j = len(res)
@@ -125,7 +135,7 @@ def show_title():
             j -= 1
         return res[:j]
 
-    about = whoIsIt(title, k)
+    about = whoIsIt(title, k, symbols)
     # print(about)
 
     if about == 0:
