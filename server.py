@@ -89,17 +89,9 @@ def get_articles_count():
 
 @app.route('/api/article/ids', methods=['GET'])
 def get_article_ids():
-    global row
     c.execute("SELECT id FROM articles;")
     article_ids = c.fetchone()
-    result = []
-
-    if len(article_ids) == 0:
-        return jsonify({'error': 'No IDs found.'}), 404
-    else:
-        for row in article_ids:
-            result.append(article_ids)
-        return row, 200
+    return jsonify(article_ids)
 
 
 if __name__ == '__main__':
