@@ -97,10 +97,10 @@ def get_article_ids():
 
 @app.route('/api/article/getText', methods=['GET'])
 def show_title():
-    if not request.json or 'title' not in request.json or 'k' not in request.json:
+    if not request.json or 'text' not in request.json or 'k' not in request.json:
         return jsonify({'error': 'Bad request. Missing required field(s)'}), 400
 
-    title = request.json['text']
+    text = request.json['text']
     try:
         k = int(request.json['k'])
     except ValueError:
@@ -112,17 +112,17 @@ def show_title():
     res = ''
     symbols = ["'", ',', '!', '?', '-', ':', ';', '@', '(', '<', '.', '!', '?', '"']
 
-    def whoIsIt(title, k, symbols):
+    def whoIsIt(text, k, symbols):
         update_text = 0
-        if len(title) == 0:
+        if len(text) == 0:
             update_text = 0  # title is empty, ExR: ...
-        elif len(title) <= k:
+        elif len(text) <= k:
             update_text = 1  # title length <= count, ExR: title
-        elif title[k - 1] == ' ':
+        elif text[k - 1] == ' ':
             update_text = 2  # 25 symbol is whitespace, ExR: delete whitespace and add ...
-        elif symbols.__contains__(title[k]):
+        elif symbols.__contains__(text[k]):
             update_text = 3  # 25+1 symbol is punctuation mark, ExR: delete symbol and add ...
-        elif title[k] == ' ':
+        elif text[k] == ' ':
             update_text = 4  # 25+1 symbol is whitespace, ExR: delete ' ' and add ...
         else:
             update_text = 5  # other
@@ -135,28 +135,25 @@ def show_title():
             j -= 1
         return res[:j]
 
-    about = whoIsIt(title, k, symbols)
+    about = whoIsIt(text, k, symbols)
     # print(about)
 
     if about == 0:
         return "..."
     elif about == 1:
-        return title
+        return text
     elif about == 2 or about == 3:
-        return delete_symb(title[:k - 1]) + "..."
+        return delete_symb(text[:k - 1]) + "..."
     elif about == 4:
-        return delete_symb(title[:k]) + "..."
+        return delete_symb(text[:k]) + "..."
     else:
         i = k-1
-        while title[i] != " " and i > 0:
+        while text[i] != " " and i > 0:
             i -= 1
-            if i != 0 and title[i] not in symbols:
-                return title[:i] + '...'
+            if i != 0 and text[i] not in symbols:
+                return text[:i] + '...'
             else:
-                return title[:k] + '...'
-
-
-
+                return text[:k] + '...'
 
 
 if __name__ == '__main__':
